@@ -1,0 +1,134 @@
+#MATLAB Code
+
+clc;
+clearvars;
+close all;
+
+
+M = 1; %No. of cell divisions
+C = power(2,M); %No. of cells
+N = 100; %No. of diffusion steps
+end_points = zeros(C,2);
+xy = zeros(N,2);
+
+v = VideoWriter('randomwalk.avi');
+open(v);
+%%
+%for particle = 1: C
+    deltax = randi([-1, 1], 1, N * 18/4);
+	deltay = randi([-1, 1], 1, N * 18/4);
+	% Get rid of any cases where BOTH x and y change by + or - 1, OR
+	% where both equal zero. (no diagonal steps)
+	goodIndexes = (abs(deltax) + abs(deltay)) == 1;
+	% In theory, 4/9th of them should be good.  To make sure we didn't run out of them, we asked for twice as many as we would need (9/4 X 2).
+	% Extract ONLY the good ones.
+	deltax = deltax(goodIndexes);
+	deltay = deltay(goodIndexes);
+	% Extract the exact number we want.
+	deltax = deltax(1 : N);
+	deltay = deltay(1 : N);
+    
+    
+	for step = 2 : N
+		% Walk in the x direction.
+		xy(step, 1) = xy(step-1, 1) + deltax(step);
+		% Walk in the y direction.
+		xy(step, 2) = xy(step-1, 2) + deltay(step);
+        end_points(1,1) = xy(step, 1);
+        end_points(1,2) = xy(step, 2);
+		% Now plot the walk so far.
+ 		xCoords = xy(1:step, 1);
+ 		yCoords = xy(1:step, 2);
+        
+        %set(gcf,'units','centimeters','position',[10,10,500,400])
+        plot(xCoords, yCoords, '.-r', 'MarkerSize', 9);
+        xlim([-10 10]);
+        ylim([-10 10]);
+        axis equal
+        frame = getframe(gcf);
+        writeVideo(v,frame);
+        %pause(0.2)
+        hold on
+    end
+    
+    
+    %plot(xy(1:N, 1), xy(1:N, 2), '.-', 'Color', rand(1,3), 'MarkerSize', 9);
+    %plot(xy(N+1:(M+1)*N, 1), xy(N+1:(M+1)*N, 2), '.-', 'Color', rand(1,3), 'MarkerSize', 9);
+    finalx = xy(N,1);
+    finaly = xy(N,2);
+    
+    plot(finalx, finaly, '.-r', 'MarkerSize', 20);
+    frame = getframe(gcf);
+    writeVideo(v,frame);
+    
+    
+    %%
+    
+    ab = zeros(N,2);
+    ab(1,1) = finalx;
+    ab(1,2) = finaly;
+    
+    delta_a = randi([-1, 1], 1, N * 18/4);
+	delta_b = randi([-1, 1], 1, N * 18/4);
+	% Get rid of any cases where BOTH x and y change by + or - 1, OR
+	% where both equal zero. (no diagonal steps)
+	goodIndexes = (abs(delta_a) + abs(delta_b)) == 1;
+	% In theory, 4/9th of them should be good.  To make sure we didn't run out of them, we asked for twice as many as we would need (9/4 X 2).
+	% Extract ONLY the good ones.
+	delta_a = delta_a(goodIndexes);
+	delta_b = delta_b(goodIndexes);
+	% Extract the exact number we want.
+	delta_a = delta_a(1 : N);
+	delta_b = delta_b(1 : N);
+    
+    cd = zeros(N,2);
+    cd(1,1) = finalx;
+    cd(1,2) = finaly;
+    
+    delta_c = randi([-1, 1], 1, N * 18/4);
+	delta_d = randi([-1, 1], 1, N * 18/4);
+	% Get rid of any cases where BOTH x and y change by + or - 1, OR
+	% where both equal zero. (no diagonal steps)
+	goodIndexes = (abs(delta_c) + abs(delta_d)) == 1;
+	% In theory, 4/9th of them should be good.  To make sure we didn't run out of them, we asked for twice as many as we would need (9/4 X 2).
+	% Extract ONLY the good ones.
+	delta_c = delta_c(goodIndexes);
+	delta_d = delta_d(goodIndexes);
+	% Extract the exact number we want.
+	delta_c = delta_c(1 : N);
+	delta_d = delta_d(1 : N);
+    
+    
+	for step = 2 : N
+		% Walk in the x direction.
+		ab(step, 1) = ab(step-1, 1) + delta_a(step);
+        cd(step, 1) = cd(step-1, 1) + delta_c(step);
+		% Walk in the y direction.
+		ab(step, 2) = ab(step-1, 2) + delta_b(step);
+        cd(step, 2) = cd(step-1, 2) + delta_d(step);
+        
+        end_points(1,1) = ab(step, 1);
+        end_points(1,2) = ab(step, 2);
+        
+        end_points(2,1) = cd(step, 1);
+        end_points(2,2) = cd(step, 2);
+        
+		% Now plot the walk so far.
+ 		aCoords = ab(1:step, 1);
+		bCoords = ab(1:step, 2);
+        cCoords = cd(1:step, 1);
+		dCoords = cd(1:step, 2);
+        %set(gcf,'units','points','position',[10,10,5000,5000])
+        plot(aCoords, bCoords, '.-g', cCoords, dCoords, '.-b', 'MarkerSize',9);
+        xlim([-10 10]);
+        ylim([-10 10]);
+        axis equal
+        frame = getframe(gcf);
+        writeVideo(v,frame);
+        hold on
+    end
+    
+    
+    close(v);
+    
+   
