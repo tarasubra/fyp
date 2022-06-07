@@ -1,19 +1,15 @@
-T = 8;
-beta = 0.2;
+T = 8; %no. of days
+beta = 0.2; %inverse temperature
 Mratio = 0;
 viewsize = 500;
 
-%note: only T, beta, Mratio and viewsize are variable, everything else is
-%fixed!
-
-%beta=0.1; %inverse temperature
-exM=2*exp(T); %equation to define growth of motile population (no. of cells increases exponentially)
+exM=2*exp(T); %equation to define growth of AML population (no. of cells increases exponentially)
 
 freq=100;
 L=1000;
 N=10000;
 dt=1/10;
-div_rate=1*dt/1440; %(how does this show mean rate = 1day-1)
+div_rate=1*dt/1440; %1day-1
 motile_ratio=Mratio; %ratio between the motile and immotile populations
 diff1=.2564*dt;    %cell length^2/min (d^2/t)
 diff2=.0145*dt;    %cell length^2/min
@@ -130,6 +126,7 @@ for i = 1:K
             end
             n=n2;
             m=m2;
+            %uncomment to view figure
             %         if mod(t,freq)==0 || t==1 %to make the movie (not every time step)
             %             h=pcolor(X,Y,H);
             %             colormap([1 1 1;jet(14)])
@@ -150,10 +147,7 @@ for i = 1:K
         %close(v);
         sH=sum(sum(H));
         sH
-        if sH<1.2*exM && sH>.8*exM %if the sum of the cells in the H matrix is within this range then produce a fig
-            % i noticed that the no.of cells seen does
-            % not match no. of cells expected if sH not
-            % within this range
+        if sH<1.2*exM && sH>.8*exM % +/- 20% of expected no. of cells
             
             flag=1;
             sH_values(i,1) = sH;
@@ -177,8 +171,9 @@ for i = 1:K
     
 end
 
+%uncomment to view figure
 %histogram(cov_values)
-histfit(cov_values)
+%histfit(cov_values)
 % boxplot(sH_values)
 % title('Distribution of the number of immotile cells by Day 8')
 % xlabel('Immotile Cells')
